@@ -10,7 +10,13 @@ public class Server implements Runnable {//to be usuniete jak przestane testowac
 
 	private static final Random random = new Random();
 	private ServerSocket serverSocket;
+	private static ServerGUI gui;
 
+	public String getToBeDisplayed() {
+		return toBeDisplayed;
+	}
+
+	private String toBeDisplayed;
 
 	public Server() throws IOException {
 		serverIsRunning = true;
@@ -19,28 +25,23 @@ public class Server implements Runnable {//to be usuniete jak przestane testowac
 	}
 
 	public static void main(String[] args) {
-		try {
-			Server server = new Server();
-			server.run();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		gui = new ServerGUI("Server");
 	}
 
 	public void run() {
-
 		try {
 			serverSocket.bind(new InetSocketAddress(randomizePortNumber()));
-			System.out.println("Listening on address " + serverSocket.getInetAddress() +
-					" on port " + serverSocket.getLocalPort());
+			toBeDisplayed = "Listening on address " + serverSocket.getInetAddress() +
+					" on port " + serverSocket.getLocalPort();
+			gui.updateDisplay(toBeDisplayed);
 			while (serverIsRunning) {
 				new ServerClientHandler(serverSocket.accept()).start();
 			}
-
-
+			serverSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	private int randomizePortNumber() {

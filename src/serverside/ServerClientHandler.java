@@ -21,7 +21,7 @@ class ServerClientHandler extends Thread {
 			this.dataInputStream = new DataInputStream(connectionSocket.getInputStream());
 			this.dataOutputStream = new DataOutputStream(connectionSocket.getOutputStream());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Socket was not connected!");
 		}
 	}
 
