@@ -3,25 +3,26 @@ package serverside;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server implements Runnable {//to be usuniete jak przestane testowac z palucha
 	boolean serverIsRunning;
 
+	private List<Integer> listOfUsedPorts;
 	private static final Random random = new Random();
-	private ServerSocket serverSocket;
+	private final ServerSocket serverSocket;
 	private static ServerGUI gui;
 
-	public String getToBeDisplayed() {
-		return toBeDisplayed;
-	}
-
-	private String toBeDisplayed;
 
 	public Server() throws IOException {
 		serverIsRunning = true;
 		this.serverSocket = new ServerSocket();
+		listOfUsedPorts = new CopyOnWriteArrayList<>();
+		listOfUsedPorts.add(7);//port na broadcast
 		// TODO: 19.05.2020 listing ther iterfaces avaliable for use and enclosing them in container
+		// TODO: 19.05.2020 when poping from listing use getlocalport from serversocket
 	}
 
 	public static void main(String[] args) {
@@ -31,7 +32,7 @@ public class Server implements Runnable {//to be usuniete jak przestane testowac
 	public void run() {
 		try {
 			serverSocket.bind(new InetSocketAddress(randomizePortNumber()));
-			toBeDisplayed = "Listening on address " + serverSocket.getInetAddress() +
+			String toBeDisplayed = "Listening on address " + serverSocket.getInetAddress() +
 					" on port " + serverSocket.getLocalPort();
 			gui.updateDisplay(toBeDisplayed);
 			while (serverIsRunning) {
@@ -48,7 +49,8 @@ public class Server implements Runnable {//to be usuniete jak przestane testowac
 		int result;
 		do {
 			result = random.nextInt(19999);
-		} while (result == 7);
+		} while (listOfUsedPorts.contains(result));
+		listOfUsedPorts.add(result);
 		return result;
 	}
 }
