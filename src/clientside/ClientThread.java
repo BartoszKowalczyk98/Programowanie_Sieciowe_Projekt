@@ -4,7 +4,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Locale;
 
 public class ClientThread extends Thread {
 	boolean isRunning;
@@ -12,6 +15,7 @@ public class ClientThread extends Thread {
 	double delta;
 	long frequency;
 
+	SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	Socket socket;
 	DataOutputStream dataOutputStream;
 	DataInputStream dataInputStream;
@@ -47,8 +51,7 @@ public class ClientThread extends Thread {
 
 				delta = (double) tServ + (t2 - t1) / 2.0 - (double) tCli;
 				tCli += delta;
-
-				System.out.printf("Client time + delta: " + String.format("%1$tH:%1$tM:%1$tS.%1$tL", tCli) + " Delta = %.3f\n", delta);
+				System.out.printf("Client time + delta: " + ISO8601DATEFORMAT.format(tCli) + " Delta = %.3f\n", delta);
 				//noinspection BusyWait
 				sleep(frequency);
 

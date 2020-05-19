@@ -8,7 +8,6 @@ import java.util.Random;
 public class Server implements Runnable {
 	private static final Random random = new Random();
 	private ServerSocket serverSocket;
-	static int port = random.nextInt(19999);
 
 	public Server() throws IOException {
 		this.serverSocket = new ServerSocket();
@@ -24,7 +23,7 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-
+		int port = random.nextInt(19999);
 		try {
 			Server server = new Server();
 			server.serverSocket.bind(new InetSocketAddress(port));
