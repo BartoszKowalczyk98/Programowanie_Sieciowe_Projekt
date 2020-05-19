@@ -28,17 +28,6 @@ public class ClientThread extends Thread {
 		}
 	}
 
-	/*
-	 * T1 - starting time
-	 * send gimmie ur time
-	 * recieve time Tserv
-	 * remember time T2 // Tcli = T2
-	 * calculate delta= Tserv + (T2-T1)/2 - Tcli
-	 * sout Tcli + delta
-	 * sout delta
-	 * sleep na f:(10-1000)ms
-	 * */
-
 	@Override
 	public void run() {
 		System.out.println("Client thread runnin");
@@ -54,8 +43,6 @@ public class ClientThread extends Thread {
 				dataOutputStream.writeUTF("ServerTime");
 				tServ = dataInputStream.readLong();
 
-				//noinspection BusyWait
-				sleep(400);
 				t2 = tCli = System.currentTimeMillis();
 
 				delta = (double)tServ + (t2 - t1) / 2.0 - (double)tCli;
