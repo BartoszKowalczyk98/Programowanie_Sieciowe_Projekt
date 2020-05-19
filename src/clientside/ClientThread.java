@@ -45,10 +45,10 @@ public class ClientThread extends Thread {
 
 				t2 = tCli = System.currentTimeMillis();
 
-				delta = (double)tServ + (t2 - t1) / 2.0 - (double)tCli;
+				delta = (double) tServ + (t2 - t1) / 2.0 - (double) tCli;
 				tCli += delta;
 
-				System.out.printf("Client time + delta: " + String.format("%1$tH:%1$tM:%1$tS.%1$tL", tCli) + " Delta = %.3f\n" ,delta);
+				System.out.printf("Client time + delta: " + String.format("%1$tH:%1$tM:%1$tS.%1$tL", tCli) + " Delta = %.3f\n", delta);
 				//noinspection BusyWait
 				sleep(frequency);
 
