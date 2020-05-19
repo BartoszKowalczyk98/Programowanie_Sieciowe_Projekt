@@ -6,10 +6,14 @@ import java.net.ServerSocket;
 import java.util.Random;
 
 public class Server implements Runnable {//to be usuniete jak przestane testowac z palucha
+	boolean serverIsRunning;
+
 	private static final Random random = new Random();
 	private ServerSocket serverSocket;
 
+
 	public Server() throws IOException {
+		serverIsRunning = true;
 		this.serverSocket = new ServerSocket();
 		// TODO: 19.05.2020 listing ther iterfaces avaliable for use and enclosing them in container
 	}
@@ -29,7 +33,7 @@ public class Server implements Runnable {//to be usuniete jak przestane testowac
 			serverSocket.bind(new InetSocketAddress(randomizePortNumber()));
 			System.out.println("Listening on address " + serverSocket.getInetAddress() +
 					" on port " + serverSocket.getLocalPort());
-			while (true) {
+			while (serverIsRunning) {
 				new ServerClientHandler(serverSocket.accept()).start();
 			}
 
