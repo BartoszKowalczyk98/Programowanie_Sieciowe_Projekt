@@ -28,9 +28,9 @@ public class Server implements Runnable{
             Server server = new Server();
             server.serverSocket.bind(new InetSocketAddress(port));
             System.out.println("Listening on port " + port);
-            ClientHandler clientHandler = new ClientHandler(server.serverSocket.accept());
-            clientHandler.start();
-            clientHandler.join();
+            ServerClientHandler serverClientHandler = new ServerClientHandler(server.serverSocket.accept());
+            serverClientHandler.start();
+            serverClientHandler.join();
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

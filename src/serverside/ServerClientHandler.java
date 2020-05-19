@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Random;
 
-class ClientHandler extends Thread {
+class ServerClientHandler extends Thread {
 	long frequency = new Random().nextInt(1000) + 11;
 	boolean isRunning;
 
@@ -14,7 +14,7 @@ class ClientHandler extends Thread {
 	DataOutputStream dataOutputStream;
 	DataInputStream dataInputStream;
 
-	public ClientHandler(Socket connectionSocket) {
+	public ServerClientHandler(Socket connectionSocket) {
 		isRunning = true;
 		this.connectionSocket = connectionSocket;
 		try {
