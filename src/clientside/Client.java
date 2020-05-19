@@ -10,7 +10,7 @@ import java.net.SocketAddress;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Client implements Runnable {
+public class Client implements Runnable {// to be usuniete jak przestane testowac z palucha
 	private static final Scanner scanner = new Scanner(System.in);
 
 
@@ -19,7 +19,6 @@ public class Client implements Runnable {
 		client.run();
 	}
 
-	//pobieranie nr portu
 	private static int getPort() throws InputMismatchException {
 		System.out.println("Podaj nr portu do połączenia: ");
 		int port = scanner.nextInt();

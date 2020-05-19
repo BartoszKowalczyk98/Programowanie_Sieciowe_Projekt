@@ -5,12 +5,13 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.Random;
 
-public class Server implements Runnable {
+public class Server implements Runnable {//to be usuniete jak przestane testowac z palucha
 	private static final Random random = new Random();
 	private ServerSocket serverSocket;
 
 	public Server() throws IOException {
 		this.serverSocket = new ServerSocket();
+		// TODO: 19.05.2020 listing ther iterfaces avaliable for use and enclosing them in container
 	}
 
 	public static void main(String[] args) {
@@ -23,17 +24,26 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-		int port = random.nextInt(19999);
-		try {
-			Server server = new Server();
-			server.serverSocket.bind(new InetSocketAddress(port));
-			System.out.println("Listening on port " + port);
-			ServerClientHandler serverClientHandler = new ServerClientHandler(server.serverSocket.accept());
-			serverClientHandler.start();
-			serverClientHandler.join();
 
-		} catch (IOException | InterruptedException e) {
+		try {
+			serverSocket.bind(new InetSocketAddress(randomizePortNumber()));
+			System.out.println("Listening on address " + serverSocket.getInetAddress() +
+					" on port " + serverSocket.getLocalPort());
+			while (true) {
+				new ServerClientHandler(serverSocket.accept()).start();
+			}
+
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private int randomizePortNumber() {
+		int result;
+		do {
+			result = random.nextInt(19999);
+		} while (result == 7);
+		return result;
 	}
 }
