@@ -23,11 +23,14 @@ public class Client {
             socket.connect(socketAddress);
 
             ClientThread clientThread = new ClientThread(socket);
-            while (clientThread.isRunning);//czekanie może lepiej by było tutaj pomyśleć nad sleepem(?)
+            //while (clientThread.isRunning);//czekanie może lepiej by było tutaj pomyśleć nad sleepem(?)
+            clientThread.join();
         } catch (IOException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
         } catch (InputMismatchException e) {
             System.out.println("Wpisałeś błędne dane!");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

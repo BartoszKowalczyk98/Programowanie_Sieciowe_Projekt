@@ -4,28 +4,43 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Random;
 
 class ClientHandler extends Thread {
-    Socket connectionSocket;
+	long frequency = new Random().nextInt(1000) + 11;
+	boolean isRunning;
 
-    String messageToSend;
-    String messageReceived;
-    DataOutputStream dataOutputStream;
-    DataInputStream dataInputStream;
+	Socket connectionSocket;
+	DataOutputStream dataOutputStream;
+	DataInputStream dataInputStream;
 
-    public ClientHandler(Socket connectionSocket) {
-        this.connectionSocket = connectionSocket;
-        try {
-            this.dataInputStream = new DataInputStream(connectionSocket.getInputStream());
-            this.dataOutputStream = new DataOutputStream(connectionSocket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public ClientHandler(Socket connectionSocket) {
+		this.connectionSocket = connectionSocket;
+		try {
+			this.dataInputStream = new DataInputStream(connectionSocket.getInputStream());
+			this.dataOutputStream = new DataOutputStream(connectionSocket.getOutputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Override
-    public void run() {
-        System.out.println("I entered run method!\nFor socket: " + connectionSocket.getInetAddress() +
-                "\nPort: " + connectionSocket.getPort());
-    }
+	@Override
+	public void run() {
+		while (isRunning) {
+			try {
+				switch (dataInputStream.readUTF()) {
+					case "Frequency":
+						dataOutputStream.writeLong(frequency);
+						break;
+					case "ServerTime":
+						dataOutputStream.writeLong(System.currentTimeMillis());
+						break;
+					default:
+						break;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
