@@ -15,6 +15,7 @@ class ClientHandler extends Thread {
 	DataInputStream dataInputStream;
 
 	public ClientHandler(Socket connectionSocket) {
+		isRunning = true;
 		this.connectionSocket = connectionSocket;
 		try {
 			this.dataInputStream = new DataInputStream(connectionSocket.getInputStream());
@@ -28,6 +29,7 @@ class ClientHandler extends Thread {
 	public void run() {
 		while (isRunning) {
 			try {
+				//noinspection EnhancedSwitchMigration
 				switch (dataInputStream.readUTF()) {
 					case "Frequency":
 						dataOutputStream.writeLong(frequency);
@@ -36,10 +38,13 @@ class ClientHandler extends Thread {
 						dataOutputStream.writeLong(System.currentTimeMillis());
 						break;
 					default:
+						System.out.println("Unknown Command!");
+						isRunning = false;
 						break;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				isRunning = false;
+				System.out.println("Client closed connection!");
 			}
 		}
 	}

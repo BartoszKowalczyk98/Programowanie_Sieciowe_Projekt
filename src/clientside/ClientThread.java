@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.Duration;
 
 public class ClientThread extends Thread {
 	boolean isRunning;
@@ -52,13 +53,20 @@ public class ClientThread extends Thread {
 			try {
 				dataOutputStream.writeUTF("ServerTime");
 				tServ = dataInputStream.readLong();
+
+				//noinspection BusyWait
+				sleep(400);
 				t2 = tCli = System.currentTimeMillis();
-				delta = tServ + (t2 - t1) / 2.0 - tCli;
+
+				delta = (double)tServ + (t2 - t1) / 2.0 - (double)tCli;
 				tCli += delta;
-				System.out.println("Client time + delta" + tCli + " Delta = " + delta);
+
+				System.out.printf("Client time + delta: " + String.format("%1$tH:%1$tM:%1$tS.%1$tL", tCli) + " Delta = %.3f\n" ,delta);
+				//noinspection BusyWait
 				sleep(frequency);
 
 			} catch (InterruptedException | IOException e) {
+				isRunning = false;
 				e.printStackTrace();
 			}
 		}

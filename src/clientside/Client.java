@@ -1,5 +1,7 @@
 package clientside;
 
+import serverside.Server;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -8,11 +10,24 @@ import java.net.SocketAddress;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Client {
+public class Client implements Runnable{
     private static final Scanner scanner = new Scanner(System.in);
 
 
     public static void main(String[] args) {
+        Client client = new Client();
+        client.run();
+    }
+
+    //pobieranie nr portu
+    private static int getPort() throws InputMismatchException {
+        System.out.println("Podaj nr portu do połączenia: ");
+        int port = scanner.nextInt();
+        scanner.nextLine();
+        return port;
+    }
+
+    public void run() {
         try (Socket socket = new Socket()){
             // TODO: 18.05.2020 multicast o port
             int port = getPort();
@@ -23,7 +38,7 @@ public class Client {
             socket.connect(socketAddress);
 
             ClientThread clientThread = new ClientThread(socket);
-            //while (clientThread.isRunning);//czekanie może lepiej by było tutaj pomyśleć nad sleepem(?)
+            clientThread.start();
             clientThread.join();
         } catch (IOException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -32,13 +47,5 @@ public class Client {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    //pobieranie nr portu
-    private static int getPort() throws InputMismatchException {
-        System.out.println("Podaj nr portu do połączenia: ");
-        int port = scanner.nextInt();
-        scanner.nextLine();
-        return port;
     }
 }
