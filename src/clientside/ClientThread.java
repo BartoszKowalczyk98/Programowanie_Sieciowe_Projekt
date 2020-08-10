@@ -48,7 +48,7 @@ public class ClientThread extends Thread {
 
 				delta = (double) tServ + (t2 - t1) / 2.0 - (double) tCli;
 				tCli += delta;
-				System.out.printf("Client time + delta: " + ISO8601DATEFORMAT.format(tCli) + " Delta = %.3f\n", delta);
+//				System.out.printf("Client time + delta: " + ISO8601DATEFORMAT.format(tCli) + " Delta = %.3f\n", delta);
 				//noinspection BusyWait
 				sleep(frequency);
 
