@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 public class ClientThread extends Thread {
@@ -13,12 +14,14 @@ public class ClientThread extends Thread {
 	long frequency;
 
 	SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	DecimalFormat df = new DecimalFormat("###.###");
 	Socket socket;
 	DataOutputStream dataOutputStream;
 	DataInputStream dataInputStream;
+	ClientGui guiHandle;
 
 
-	public ClientThread(Socket socket) {
+	public ClientThread(Socket socket, ClientGui guiHandle) {
 		isRunning = true;
 		this.socket = socket;
 		try {
@@ -27,6 +30,7 @@ public class ClientThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.guiHandle = guiHandle;
 	}
 
 	@Override
@@ -49,6 +53,10 @@ public class ClientThread extends Thread {
 				delta = (double) tServ + (t2 - t1) / 2.0 - (double) tCli;
 				tCli += delta;
 //				System.out.printf("Client time + delta: " + ISO8601DATEFORMAT.format(tCli) + " Delta = %.3f\n", delta);
+
+				guiHandle.updateDisplay("Client time + delta: " +
+						ISO8601DATEFORMAT.format(tCli) +
+						" Delta = " + df.format(delta) + "\n");
 				//noinspection BusyWait
 				sleep(frequency);
 

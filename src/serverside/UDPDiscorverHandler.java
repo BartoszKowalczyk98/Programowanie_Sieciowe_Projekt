@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.ServerSocket;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class UDPDiscorverHandler implements Runnable {
 	private int listeningPort;
@@ -21,13 +20,16 @@ public class UDPDiscorverHandler implements Runnable {
 
 		this.group = group;
 		multicastSocket = new MulticastSocket(listeningPort);
-		this.serverSocketList = new CopyOnWriteArrayList<>(serverSocketList);
+		this.serverSocketList = serverSocketList;
 		multicastSocket.joinGroup(this.group);
 		buf = new byte[1024];
 	}
 
 	@Override
 	public void run() {
+		for (ServerSocket serverSocket : serverSocketList) {
+			System.out.println(serverSocket.getInetAddress());
+		}
 		while (true) {
 			try {
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -45,6 +47,7 @@ public class UDPDiscorverHandler implements Runnable {
 					packet = new DatagramPacket("END".getBytes(), "END".length(), group, listeningPort);
 					multicastSocket.send(packet);
 				}
+
 			} catch (IOException exception) {
 				exception.printStackTrace();
 			}

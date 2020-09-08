@@ -11,51 +11,72 @@ import java.net.SocketAddress;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import static java.lang.Thread.sleep;
+
 public class Client implements Runnable {// to be usuniete jak przestane testowac z palucha
 	private static final Scanner scanner = new Scanner(System.in);
 	private final String multicastIP = "230.0.0.0";
 	private final int listeningPort = 7;
 	private UDPDiscoverClient udpDiscoverClient;
+	private static ClientGui gui;
+
+	private ClientThread clientThread;
+	private Socket socket;
+
+	public Client(ClientGui guiHandle) throws IOException {
+		udpDiscoverClient = new UDPDiscoverClient(InetAddress.getByName(multicastIP), listeningPort);
+		socket = new Socket();
+		gui = guiHandle;
+	}
 
 
 	public static void main(String[] args) {
-		Client client = new Client();
-		client.run();
-	}
-
-	private static int getPort() throws InputMismatchException {
-		System.out.println("Podaj nr portu do połączenia: ");
-		int port = scanner.nextInt();
-		scanner.nextLine();
-		return port;
+		new ClientGui("tytulek");
 	}
 
 	public void run() {
-		try (Socket socket = new Socket()) {
+		try {
+			while (!isClientConnected()) {
+				udpDiscoverClient.sendDiscoverSignal();
+				String[] serverlist = udpDiscoverClient.receiveResponseAfterDiscovery();
+				if (serverlist == null) {
+					System.out.println("no servers available");
+					continue;
+				}
+				findLastConnectedServer(serverlist);// TODO: 10.08.2020 make it not only print
+				gui.updateUpperLabel("listing all avaliable servers");
+				gui.getNewServerList(serverlist);
+				gui.updateUpperLabel("waiting for next refresh");
+				sleep(1000);
+			}
 
-			udpDiscoverClient = new UDPDiscoverClient(InetAddress.getByName(multicastIP), listeningPort);
-			udpDiscoverClient.sendDiscoverSignal();
-			String[] serverlist = udpDiscoverClient.receiveResponseAfterDiscovery();
-			findLastConnectedServer(serverlist);
-			// TODO: 18.05.2020 wybieranie servera z listy w gui(?)
-			int port = getPort();
-			InetAddress inetAddress = InetAddress.getByName("localhost");
-			SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
-			socket.connect(socketAddress);
-
-			ClientThread clientThread = new ClientThread(socket);
-			System.out.println(socket.getInetAddress());
-			System.out.println(socket.getLocalAddress());
-			clientThread.start();
-			clientThread.join();
-			saveServerAsDefault(socket);
-		} catch (IOException | IllegalArgumentException e) {
+		} catch (IOException e) {
 			System.out.println(e.getMessage());
-		} catch (InputMismatchException e) {
-			System.out.println("Wpisałeś błędne dane!");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void connectToServerWithGivenPort(int port, String address) {
+		try {
+			SocketAddress socketAddress = new InetSocketAddress(address, port);
+			socket.connect(socketAddress);
+
+			clientThread = new ClientThread(socket, gui);
+			clientThread.start();
+//		clientThread.join();
+
+			saveServerAsDefault(address);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	public boolean isClientConnected() {
+		if (clientThread != null)
+			return clientThread.isRunning;
+		else
+			return false;
 	}
 
 	private void findLastConnectedServer(String[] serverlist) {
@@ -66,8 +87,7 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 		}
 		for (String server : serverlist) {
 			if (server.contains(lastConnectedServer)) {
-				System.out.println("default server would be:");
-				System.out.println(server);
+				return;
 			}
 		}
 	}
@@ -88,14 +108,14 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 		return data;
 	}
 
-	private void saveServerAsDefault(Socket socket) throws IOException {
+	private void saveServerAsDefault(String defaultServerAddress) throws IOException {
 		createFile();
-		writeToFile(socket);
+		writeToFile(defaultServerAddress);
 	}
 
-	private void writeToFile(Socket socket) throws IOException {
+	private void writeToFile(String defaultServerAddress) throws IOException {
 		FileWriter myWriter = new FileWriter("lastRecordedServer.txt");
-		myWriter.write(socket.getLocalAddress().toString());
+		myWriter.write(defaultServerAddress);
 		myWriter.close();
 	}
 
@@ -106,5 +126,12 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 		} else {
 			System.out.println("File already exists.");
 		}
+	}
+
+	private static int getPort() throws InputMismatchException {
+		System.out.println("Podaj nr portu do połączenia: ");
+		int port = scanner.nextInt();
+		scanner.nextLine();
+		return port;
 	}
 }

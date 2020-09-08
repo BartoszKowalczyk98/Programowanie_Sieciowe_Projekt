@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class ServerGUI {
 	private JPanel panel1;
-	private JButton startButton;
+	protected JButton startButton;
 	private JTextArea display;
 	private JLabel isServerUp;
 	private JScrollPane scrollPane;
