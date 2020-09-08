@@ -27,9 +27,7 @@ public class UDPDiscorverHandler implements Runnable {
 
 	@Override
 	public void run() {
-		for (ServerSocket serverSocket : serverSocketList) {
-			System.out.println(serverSocket.getInetAddress());
-		}
+
 		while (true) {
 			try {
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);

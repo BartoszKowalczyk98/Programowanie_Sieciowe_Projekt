@@ -41,6 +41,7 @@ public class ClientGui {
 
 	public void getNewServerList(String[] serverList) {
 		serverListPanel.removeAll();
+
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
@@ -60,10 +61,17 @@ public class ClientGui {
 				int port = Integer.valueOf(serverinfo[3]);
 				clientClassHandle.connectToServerWithGivenPort(port, address);
 				serverConnectButton.setEnabled(false);
+				for (Component component : serverListPanel.getComponents()) {
+					if (component instanceof JButton) {
+						component.setEnabled(false);
+					}
+				}
 			});
 			container.add(serverAddress);
 			container.add(serverConnectButton);
 			serverListPanel.add(container, c);
 		}
+		serverListPanel.revalidate();
+		serverListPanel.repaint();
 	}
 }

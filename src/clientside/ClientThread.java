@@ -14,7 +14,7 @@ public class ClientThread extends Thread {
 	long frequency;
 
 	SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-	DecimalFormat df = new DecimalFormat("###.###");
+	DecimalFormat df = new DecimalFormat("##0.0000");
 	Socket socket;
 	DataOutputStream dataOutputStream;
 	DataInputStream dataInputStream;

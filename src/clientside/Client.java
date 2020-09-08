@@ -8,13 +8,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
-public class Client implements Runnable {// to be usuniete jak przestane testowac z palucha
-	private static final Scanner scanner = new Scanner(System.in);
+public class Client {
 	private final String multicastIP = "230.0.0.0";
 	private final int listeningPort = 7;
 	private UDPDiscoverClient udpDiscoverClient;
@@ -31,7 +29,7 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 
 
 	public static void main(String[] args) {
-		new ClientGui("tytulek");
+		new ClientGui("Client");
 	}
 
 	public void run() {
@@ -40,14 +38,19 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 				udpDiscoverClient.sendDiscoverSignal();
 				String[] serverlist = udpDiscoverClient.receiveResponseAfterDiscovery();
 				if (serverlist == null) {
-					System.out.println("no servers available");
 					continue;
+				}
+
+				System.out.println("====");
+				for (String s : serverlist) {
+					System.out.println(s);
 				}
 				findLastConnectedServer(serverlist);// TODO: 10.08.2020 make it not only print
 				gui.updateUpperLabel("listing all avaliable servers");
 				gui.getNewServerList(serverlist);
-				gui.updateUpperLabel("waiting for next refresh");
 				sleep(1000);
+				gui.updateUpperLabel("waiting for next refresh");
+
 			}
 
 		} catch (IOException e) {
@@ -64,8 +67,6 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 
 			clientThread = new ClientThread(socket, gui);
 			clientThread.start();
-//		clientThread.join();
-
 			saveServerAsDefault(address);
 		} catch (IOException exception) {
 			exception.printStackTrace();
@@ -82,7 +83,7 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 	private void findLastConnectedServer(String[] serverlist) {
 		String lastConnectedServer = readFile();
 		if (lastConnectedServer == null) {
-			System.out.println("no servers are remembererd");
+			gui.updateUpperLabel("No servers were recognised");
 			return;
 		}
 		for (String server : serverlist) {
@@ -122,16 +123,10 @@ public class Client implements Runnable {// to be usuniete jak przestane testowa
 	private void createFile() throws IOException {
 		File fileToRecognisePreviousServer = new File("lastRecordedServer.txt");
 		if (fileToRecognisePreviousServer.createNewFile()) {
-			System.out.println("File created: " + fileToRecognisePreviousServer.getName());
+			gui.updateUpperLabel("File created " + fileToRecognisePreviousServer.getName());
 		} else {
-			System.out.println("File already exists.");
+			gui.updateUpperLabel("File already exists, jsut overwritten it");
 		}
 	}
 
-	private static int getPort() throws InputMismatchException {
-		System.out.println("Podaj nr portu do połączenia: ");
-		int port = scanner.nextInt();
-		scanner.nextLine();
-		return port;
-	}
 }
