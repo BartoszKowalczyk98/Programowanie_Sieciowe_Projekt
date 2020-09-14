@@ -1,10 +1,7 @@
 package clientside;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +32,15 @@ public class UDPDiscoverClient {
 	}
 
 	public String[] receiveResponseAfterDiscovery() throws IOException {
+		multicastSocket.setSoTimeout(3000);
 		while (true) {
 			buf = new byte[1024];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
-			multicastSocket.receive(packet);
+			try {
+				multicastSocket.receive(packet);
+			} catch (SocketTimeoutException e) {
+				return null;
+			}
 			String received = new String(
 					packet.getData(), 0, packet.getLength());
 			if ("END".equals(received)) {
@@ -55,7 +57,7 @@ public class UDPDiscoverClient {
 				for (String line : list) {
 					if (line.contains("127.0.0.1")) {
 						//if needed to filter localhost
-						list.remove(line)
+						list.remove(line);
 					}
 				}
 				lines = list.toArray(new String[0]);

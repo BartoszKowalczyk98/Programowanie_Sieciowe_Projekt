@@ -1,5 +1,7 @@
 package clientside;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -35,13 +37,7 @@ public class ClientThread extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("Client thread runnin");
-		try {
-			dataOutputStream.writeUTF("Frequency");
-			frequency = dataInputStream.readLong();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		frequency = getFrequency();
 		while (isRunning) {
 			t1 = System.currentTimeMillis();
 			try {
@@ -65,5 +61,25 @@ public class ClientThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private Long getFrequency() {
+		long f = 0;
+		boolean validFrequency = false;
+		while (!validFrequency) {
+			try {
+				f = Long.parseLong(JOptionPane.showInputDialog("Input desired frequency of information exchange (a " +
+						"number between 10 and 1000"));
+				if (f >= 10 && f <= 1000) {
+					validFrequency = true;
+				} else {
+					JOptionPane.showMessageDialog(null, "The number you input was wrong try again");
+				}
+			} catch (NumberFormatException | HeadlessException exception) {
+				JOptionPane.showMessageDialog(null, "The number you input was wrong try again");
+			}
+		}
+		return f;
+
 	}
 }

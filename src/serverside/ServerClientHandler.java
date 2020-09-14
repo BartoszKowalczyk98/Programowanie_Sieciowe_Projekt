@@ -4,47 +4,49 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Random;
 
 class ServerClientHandler extends Thread {
-	long frequency = new Random().nextInt(1000) + 11;
 	boolean isRunning;
 
-	Socket connectionSocket;
-	DataOutputStream dataOutputStream;
-	DataInputStream dataInputStream;
+	protected Socket connectionSocket;
+	private DataOutputStream dataOutputStream;
+	private DataInputStream dataInputStream;
+	private ServerGUI guiHandle;
 
-	public ServerClientHandler(Socket connectionSocket) {
+	public ServerClientHandler(Socket connectionSocket, ServerGUI guiHandle) {
+		this.guiHandle = guiHandle;
 		isRunning = true;
 		this.connectionSocket = connectionSocket;
 		try {
 			this.dataInputStream = new DataInputStream(connectionSocket.getInputStream());
 			this.dataOutputStream = new DataOutputStream(connectionSocket.getOutputStream());
 		} catch (IOException e) {
-			System.out.println("Socket was not connected!");
+			this.guiHandle.updateDisplay("Error in opening streams with client!\n");
 		}
 	}
 
 	@Override
 	public void run() {
+		guiHandle.updateDisplay("Client " + connectionSocket.getInetAddress() + " connected and exchanging information\n");
 		while (isRunning) {
 			try {
 				//noinspection EnhancedSwitchMigration
 				switch (dataInputStream.readUTF()) {
-					case "Frequency":
-						dataOutputStream.writeLong(frequency);
-						break;
 					case "ServerTime":
 						dataOutputStream.writeLong(System.currentTimeMillis());
 						break;
+					case "End":
+						isRunning = false;
+						guiHandle.updateDisplay("Client disconnected!\n");
+						break;
 					default:
-						System.out.println("Unknown Command!");
+						guiHandle.updateDisplay("Client sent an unknown command\n");
 						isRunning = false;
 						break;
 				}
 			} catch (IOException e) {
 				isRunning = false;
-				System.out.println("Client closed connection!");
+				guiHandle.updateDisplay("Client disconnected!\n");
 			}
 		}
 	}

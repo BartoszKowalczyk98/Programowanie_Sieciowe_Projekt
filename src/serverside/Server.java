@@ -72,7 +72,7 @@ public class Server implements Runnable {
 				new Thread(() -> {
 					try {
 						ServerClientHandler handlerToBeSoonAddedToList =
-								new ServerClientHandler(serverSocket.accept());
+								new ServerClientHandler(serverSocket.accept(), gui);
 						handlerToBeSoonAddedToList.start();
 						serverSocketList.remove(serverSocket);//remove from pool of available serversockets
 						usedServerSocketList.add(serverSocket);//add to busy socket list

@@ -35,9 +35,12 @@ public class Client {
 	public void run() {
 		try {
 			while (!isClientConnected()) {
+				gui.updateUpperLabel("Sending Discover signal!");
 				udpDiscoverClient.sendDiscoverSignal();
 				String[] serverlist = udpDiscoverClient.receiveResponseAfterDiscovery();
 				if (serverlist == null) {
+					gui.updateUpperLabel("No servers available!");
+					sleep(1000);
 					continue;
 				}
 				String lastConnectedServer = findLastConnectedServer(serverlist);
