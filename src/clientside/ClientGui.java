@@ -2,6 +2,8 @@ package clientside;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 public class ClientGui {
@@ -27,6 +29,19 @@ public class ClientGui {
 			return;
 		}
 
+		//confirmation on exit
+		//https://stackoverflow.com/questions/21330682/confirmation-before-press-yes-to-exit-program-in-java
+		jFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirmed = JOptionPane.showConfirmDialog(null, "Are you sure you want to close program?", "Exit",
+						JOptionPane.YES_NO_OPTION);
+				if (confirmed == JOptionPane.YES_OPTION) {
+					clientClassHandle.disconnectFromServer();
+					jFrame.dispose();
+				}
+			}
+		});
 		jFrame.setVisible(true);
 		clientClassHandle.run();
 	}
@@ -42,7 +57,6 @@ public class ClientGui {
 	public void getNewServerList(String[] serverList, String lastConnectedServer) {
 		serverListPanel.removeAll();
 
-		serverListPanel.setName("bepis");
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
@@ -57,13 +71,11 @@ public class ClientGui {
 			JLabel serverAddress = new JLabel(server);
 			JButton serverConnectButton = new JButton("Connect");
 			serverConnectButton.addActionListener(e -> {
-				updateUpperLabel("Connected to server and exchanging information.");
 				String[] serverinfo = server.split(" ");
 				String address = serverinfo[1].substring(1);
 				int port = Integer.valueOf(serverinfo[3]);
 				clientClassHandle.connectToServerWithGivenPort(port, address);
 				serverConnectButton.setEnabled(false);
-				System.out.println(serverConnectButton.getParent().getParent().getName());
 				for (Component component : serverConnectButton.getParent().getParent().getComponents()) {
 					if (component instanceof Container) {
 						for (Component comp : ((Container) component).getComponents()) {

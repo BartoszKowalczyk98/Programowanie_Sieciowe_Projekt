@@ -59,6 +59,10 @@ public class Client {
 
 	}
 
+	public void disconnectFromServer() {
+		clientThread.isRunning.set(false);
+	}
+
 	public void connectToServerWithGivenPort(int port, String address) {
 		try {
 			SocketAddress socketAddress = new InetSocketAddress(address, port);
@@ -75,7 +79,7 @@ public class Client {
 
 	public boolean isClientConnected() {
 		if (clientThread != null)
-			return clientThread.isRunning;
+			return clientThread.isRunning.get();
 		else
 			return false;
 	}

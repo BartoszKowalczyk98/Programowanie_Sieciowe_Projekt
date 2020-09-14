@@ -8,9 +8,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientThread extends Thread {
-	boolean isRunning;
+	AtomicBoolean isRunning = new AtomicBoolean();
 	long t1, t2, tCli, tServ;
 	double delta;
 	long frequency;
@@ -24,7 +25,7 @@ public class ClientThread extends Thread {
 
 
 	public ClientThread(Socket socket, ClientGui guiHandle) {
-		isRunning = true;
+		isRunning.set(true);
 		this.socket = socket;
 		try {
 			dataInputStream = new DataInputStream(socket.getInputStream());
@@ -38,7 +39,7 @@ public class ClientThread extends Thread {
 	@Override
 	public void run() {
 		frequency = getFrequency();
-		while (isRunning) {
+		while (isRunning.get()) {
 			t1 = System.currentTimeMillis();
 			try {
 				dataOutputStream.writeUTF("ServerTime");
@@ -56,9 +57,14 @@ public class ClientThread extends Thread {
 				sleep(frequency);
 
 			} catch (InterruptedException | IOException e) {
-				isRunning = false;
+				isRunning.set(false);
 				e.printStackTrace();
 			}
+		}
+		try {
+			dataOutputStream.writeUTF("End");
+		} catch (IOException exception) {
+			exception.printStackTrace();
 		}
 	}
 

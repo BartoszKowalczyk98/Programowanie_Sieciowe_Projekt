@@ -46,7 +46,7 @@ class ServerClientHandler extends Thread {
 				}
 			} catch (IOException e) {
 				isRunning = false;
-				guiHandle.updateDisplay("Client disconnected!\n");
+				guiHandle.updateDisplay("Client Crashed!\n");
 			}
 		}
 	}
