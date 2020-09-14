@@ -46,9 +46,8 @@ public class ClientThread extends Thread {
 
 				t2 = tCli = System.currentTimeMillis();
 
-				delta = (double) tServ + (t2 - t1) / 2.0 - (double) tCli;
+				delta = ((double) tServ + (t2 - t1) / 2.0d) - (double) tCli;
 				tCli += delta;
-//				System.out.printf("Client time + delta: " + ISO8601DATEFORMAT.format(tCli) + " Delta = %.3f\n", delta);
 
 				guiHandle.updateDisplay("Client time + delta: " +
 						ISO8601DATEFORMAT.format(tCli) +
@@ -63,6 +62,8 @@ public class ClientThread extends Thread {
 		}
 	}
 
+	// idea behind this code was taken from
+	//https://stackoverflow.com/questions/6446881/java-pop-up-window-to-ask-for-data
 	private Long getFrequency() {
 		long f = 0;
 		boolean validFrequency = false;

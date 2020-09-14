@@ -54,6 +54,7 @@ public class Server implements Runnable {
 
 				startListeningForClients();
 				checkConnectedClients();
+				//noinspection BusyWait
 				sleep(1000);
 			}
 		} catch (IOException | InterruptedException e) {

@@ -49,7 +49,6 @@ public class Client {
 				gui.getNewServerList(serverlist, lastConnectedServer);
 				sleep(1000);
 				gui.updateUpperLabel("waiting for next refresh");
-
 			}
 
 		} catch (IOException e) {
@@ -57,6 +56,7 @@ public class Client {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public void connectToServerWithGivenPort(int port, String address) {
@@ -67,6 +67,7 @@ public class Client {
 			clientThread = new ClientThread(socket, gui);
 			clientThread.start();
 			saveServerAsDefault(address);
+			gui.updateUpperLabel("Connected to server and exchanging information!");
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
@@ -125,7 +126,7 @@ public class Client {
 		if (fileToRecognisePreviousServer.createNewFile()) {
 			gui.updateUpperLabel("File created " + fileToRecognisePreviousServer.getName());
 		} else {
-			gui.updateUpperLabel("File already exists, jsut overwritten it");
+			gui.updateUpperLabel("Default Server saved");
 		}
 	}
 

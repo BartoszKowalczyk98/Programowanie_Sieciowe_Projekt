@@ -42,6 +42,7 @@ public class ClientGui {
 	public void getNewServerList(String[] serverList, String lastConnectedServer) {
 		serverListPanel.removeAll();
 
+		serverListPanel.setName("bepis");
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
@@ -62,13 +63,17 @@ public class ClientGui {
 				int port = Integer.valueOf(serverinfo[3]);
 				clientClassHandle.connectToServerWithGivenPort(port, address);
 				serverConnectButton.setEnabled(false);
-				for (Component component : serverListPanel.getComponents()) {
-					if (component instanceof JButton) {
-						component.setEnabled(false);
+				System.out.println(serverConnectButton.getParent().getParent().getName());
+				for (Component component : serverConnectButton.getParent().getParent().getComponents()) {
+					if (component instanceof Container) {
+						for (Component comp : ((Container) component).getComponents()) {
+							if (comp instanceof JButton)
+								comp.setEnabled(false);
+						}
 					}
 				}
-				serverListPanel.revalidate();
-				serverListPanel.repaint();
+				serverConnectButton.getParent().revalidate();
+				serverConnectButton.getParent().repaint();
 			});
 
 			if (server.equals(lastConnectedServer)) {
