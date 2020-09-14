@@ -5,6 +5,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 //https://www.baeldung.com/java-broadcast-multicast
 public class UDPDiscoverClient {
@@ -46,11 +49,16 @@ public class UDPDiscoverClient {
 					return null;
 				}
 				String[] lines = received.split("\\r?\\n");
-				for (String line : lines) {
-					if (!line.contains("127.0.0.1")) {
-						System.out.println(line);
+
+				//filtering localhost but i left it off for the purpose of testing
+				List<String> list = new ArrayList<>(Arrays.asList(lines));
+				for (String line : list) {
+					if (line.contains("127.0.0.1")) {
+						//if needed to filter localhost
+						list.remove(line)
 					}
 				}
+				lines = list.toArray(new String[0]);
 				return lines;
 			}
 		}

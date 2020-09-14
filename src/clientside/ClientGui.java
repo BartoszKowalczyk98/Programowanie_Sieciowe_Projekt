@@ -17,7 +17,7 @@ public class ClientGui {
 		jFrame.setContentPane(mainPanel);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.pack();
-		jFrame.setSize(600, 400);
+		jFrame.setSize(800, 600);
 		upperLabel.setText("Client is not connected to any server");
 
 		try {
@@ -39,7 +39,7 @@ public class ClientGui {
 		upperLabel.setText(toBeDisplayed);
 	}
 
-	public void getNewServerList(String[] serverList) {
+	public void getNewServerList(String[] serverList, String lastConnectedServer) {
 		serverListPanel.removeAll();
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -49,6 +49,7 @@ public class ClientGui {
 		c.weighty = 1;
 
 		for (String server : serverList) {
+
 			Container container = new Container();
 			GridLayout gridLayout = new GridLayout(1, 2);
 			container.setLayout(gridLayout);
@@ -66,9 +67,16 @@ public class ClientGui {
 						component.setEnabled(false);
 					}
 				}
+				serverListPanel.revalidate();
+				serverListPanel.repaint();
 			});
+
+			if (server.equals(lastConnectedServer)) {
+				serverAddress.setText(server + " <-Previously connected");
+			}
 			container.add(serverAddress);
 			container.add(serverConnectButton);
+
 			serverListPanel.add(container, c);
 		}
 		serverListPanel.revalidate();

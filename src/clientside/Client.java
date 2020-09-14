@@ -40,14 +40,10 @@ public class Client {
 				if (serverlist == null) {
 					continue;
 				}
+				String lastConnectedServer = findLastConnectedServer(serverlist);
 
-				System.out.println("====");
-				for (String s : serverlist) {
-					System.out.println(s);
-				}
-				findLastConnectedServer(serverlist);// TODO: 10.08.2020 make it not only print
 				gui.updateUpperLabel("listing all avaliable servers");
-				gui.getNewServerList(serverlist);
+				gui.getNewServerList(serverlist, lastConnectedServer);
 				sleep(1000);
 				gui.updateUpperLabel("waiting for next refresh");
 
@@ -80,17 +76,18 @@ public class Client {
 			return false;
 	}
 
-	private void findLastConnectedServer(String[] serverlist) {
+	private String findLastConnectedServer(String[] serverlist) {
 		String lastConnectedServer = readFile();
 		if (lastConnectedServer == null) {
 			gui.updateUpperLabel("No servers were recognised");
-			return;
+			return "None";
 		}
 		for (String server : serverlist) {
 			if (server.contains(lastConnectedServer)) {
-				return;
+				return server;
 			}
 		}
+		return "None";
 	}
 
 	private String readFile() {
