@@ -1,6 +1,7 @@
 # Programowanie_Sieciowe_Projekt
 Final project for network programming in university 3rd year software engineer
-
+IDE used: Intellij by IDEA
+Os used: Windows 10
 2 main folders 
 Clientside consists of java files responsible for client side of project. 
 ClientGui.java and ClientGui.form contain code responsible for visual aspect of this part of program, of client part.
