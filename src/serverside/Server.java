@@ -104,6 +104,12 @@ public class Server implements Runnable {
 		}
 	}
 
+	/**
+	 * lists all available interfaces and displays them on display in GUI
+	 *
+	 * @throws IOException              IO error when opening the socket
+	 * @throws IllegalArgumentException if port is outside range
+	 */
 	private void getAndDisplayServerSocketList() throws IOException {
 		String toBeDisplayed = "";
 		for (NetworkInterface net : nets) {
@@ -122,6 +128,11 @@ public class Server implements Runnable {
 		gui.updateDisplay(toBeDisplayed);
 	}
 
+	/**
+	 * method to get random number that is not already in use
+	 *
+	 * @return free port number as int
+	 */
 	private int randomizePortNumber() {
 		int result;
 		do {

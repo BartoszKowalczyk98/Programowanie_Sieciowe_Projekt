@@ -23,6 +23,11 @@ public class UDPDiscoverClient {
 		buf = new byte[1024];
 	}
 
+	/**
+	 * Method that sends out a datagram packet to multicast group and asks for available servers
+	 *
+	 * @throws IOException if I/O error occurs during sending packet
+	 */
 	public void sendDiscoverSignal() throws IOException {
 		buf = "DISCOVERY".getBytes();
 
@@ -31,7 +36,14 @@ public class UDPDiscoverClient {
 		datagramSocket.send(packet);
 	}
 
+	/**
+	 * Method that waits for respose from server and returns serverlist as string array
+	 *
+	 * @return Server list as String array, or null if response timed out
+	 * @throws IOException if I/O error occurs
+	 */
 	public String[] receiveResponseAfterDiscovery() throws IOException {
+		//timeout to actually proceed with program and not get stuck
 		multicastSocket.setSoTimeout(3000);
 		while (true) {
 			buf = new byte[1024];
@@ -52,11 +64,10 @@ public class UDPDiscoverClient {
 				}
 				String[] lines = received.split("\\r?\\n");
 
-				//filtering localhost but i left it off for the purpose of testing
 				List<String> list = new ArrayList<>(Arrays.asList(lines));
 				for (String line : list) {
 					if (line.contains("127.0.0.1")) {
-						//if needed to filter localhost
+//						if needed to filter localhost
 						list.remove(line);
 //						System.out.println("localhost would be filtered out here!");
 					}

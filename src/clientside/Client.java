@@ -63,6 +63,13 @@ public class Client {
 		clientThread.isRunning.set(false);
 	}
 
+	/**
+	 * as the name implies method used to connect to sever with known port
+	 * and start a thread that exchanges information with server
+	 *
+	 * @param port    port number to server
+	 * @param address ip address of server to connect to
+	 */
 	public void connectToServerWithGivenPort(int port, String address) {
 		try {
 			SocketAddress socketAddress = new InetSocketAddress(address, port);
@@ -84,6 +91,13 @@ public class Client {
 			return false;
 	}
 
+	/**
+	 * method that looks for any previously saved server
+	 * and compares it with actual list given by server
+	 *
+	 * @param serverlist list of currently available servers
+	 * @return "None" if no default server was found, ip address if one was found
+	 */
 	private String findLastConnectedServer(String[] serverlist) {
 		String lastConnectedServer = readFile();
 		if (lastConnectedServer == null) {
@@ -114,6 +128,13 @@ public class Client {
 		return data;
 	}
 
+	/**
+	 * whole method that saves lastly connected server that includes
+	 * creating file and writing a single line inside
+	 *
+	 * @param defaultServerAddress ip address as string
+	 * @throws IOException
+	 */
 	private void saveServerAsDefault(String defaultServerAddress) throws IOException {
 		createFile();
 		writeToFile(defaultServerAddress);
