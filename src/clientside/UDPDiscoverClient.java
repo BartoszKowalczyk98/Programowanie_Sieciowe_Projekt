@@ -57,8 +57,8 @@ public class UDPDiscoverClient {
 				for (String line : list) {
 					if (line.contains("127.0.0.1")) {
 						//if needed to filter localhost
-						//list.remove(line);
-						System.out.println("localhost would be filtered out here!");
+						list.remove(line);
+//						System.out.println("localhost would be filtered out here!");
 					}
 				}
 				lines = list.toArray(new String[0]);

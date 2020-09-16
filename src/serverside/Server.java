@@ -39,7 +39,6 @@ public class Server implements Runnable {
 
 	public static void main(String[] args) {
 		gui = new ServerGUI("Server");
-		gui.startButton.doClick();// for speeding up testing
 	}
 
 	public void run() {

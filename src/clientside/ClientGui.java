@@ -21,7 +21,7 @@ public class ClientGui {
 		jFrame.pack();
 		jFrame.setSize(800, 600);
 		upperLabel.setText("Client is not connected to any server");
-
+		jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		try {
 			clientClassHandle = new Client(this);
 		} catch (IOException exception) {
@@ -39,10 +39,7 @@ public class ClientGui {
 				if (confirmed == JOptionPane.YES_OPTION) {
 					clientClassHandle.disconnectFromServer();
 					jFrame.dispose();
-				} else {
-					jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				}
-
 			}
 		});
 		jFrame.setVisible(true);
