@@ -18,6 +18,7 @@ public class UDPDiscoverClient {
 		this.group = group;
 		this.port = port;
 		datagramSocket = new DatagramSocket();
+		datagramSocket.setBroadcast(true);
 		multicastSocket = new MulticastSocket(port);
 		multicastSocket.joinGroup(group);
 		buf = new byte[1024];
