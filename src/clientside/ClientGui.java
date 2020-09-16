@@ -39,7 +39,10 @@ public class ClientGui {
 				if (confirmed == JOptionPane.YES_OPTION) {
 					clientClassHandle.disconnectFromServer();
 					jFrame.dispose();
+				} else {
+					jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				}
+
 			}
 		});
 		jFrame.setVisible(true);
